@@ -1,0 +1,61 @@
+.new-task {
+  width: 100%;
+  height: 100%;
+  padding: 50px 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.new-task > h3 {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.add-new {
+  width: 100%;
+}
+.add-new > input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+.input-desc,
+.choose-date,
+.choose-pio {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+}
+.input-desc > label,
+.choose-date > label,
+.choose-pio > label {
+  font-weight: bold;
+  font-size: 14px;
+}
+.input-desc > textarea {
+  padding: 10px;
+  outline: none;
+}
+.choose {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.choose-date > input,
+.choose-pio > select {
+  padding: 8px 10px;
+  outline: none;
+}
+.new-task > button {
+  color: white;
+  background-color: #5cb85c;
+  padding: 10px 0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 50px;
+}
