@@ -1,21 +1,60 @@
 import React, { useState } from "react";
 import "./newtask.css";
-function Newtask({ isEdit, dataEdit }) {
-  const [title, setTile] = useState();
-  const [desc, setDisc] = useState();
-  const [date, setDate] = useState();
-  const [pio, setPio] = useState();
+import { v4 as uuidv4 } from "uuid";
 
-  console.log(date);
+function Newtask({ isEdit, dataEdit }) {
+  const [payload, setPayload] = useState({
+    title: isEdit ? dataEdit.title : "",
+    desc: isEdit ? dataEdit.desc : "",
+    date: isEdit ? dataEdit.date : "",
+    pio: isEdit ? dataEdit.pio : "",
+  });
+
+  const getTodosFromLocalStorage = () => {
+    const storedTodos = localStorage.getItem("tasks");
+    if (storedTodos === null) {
+      const defaultTodos = []; // danh sách todos mặc định
+      localStorage.setItem("tasks", JSON.stringify(defaultTodos));
+      return defaultTodos;
+    }
+    return JSON.parse(storedTodos);
+  };
+
+  const handleAddtask = () => {
+    const todos = getTodosFromLocalStorage();
+    const id = uuidv4();
+    payload.id = id;
+    const updateTodos = [...todos, payload];
+    localStorage.setItem("tasks", JSON.stringify(updateTodos));
+    setPayload({
+      title: "",
+      desc: "",
+      date: "",
+      pio: "",
+    });
+  };
+
+  const handleUpdateTask = (id) => {
+    const todos = getTodosFromLocalStorage();
+    const filterTodos = todos.filter((item) => item.id !== id);
+    payload.id = id;
+    const updateTodos = [...filterTodos, payload];
+    localStorage.setItem("tasks", JSON.stringify(updateTodos));
+    alert("Cập nhật công việc thành công");
+  };
+  // var defaultDate = new Date().toISOString().split("T")[0];
   return (
     <div className="new-task">
       <h3>{isEdit ? "" : "New task"}</h3>
       <div className="add-new">
         <input
-          value={isEdit ? dataEdit.title : title}
+          value={payload.title}
           type="text"
           className="input-title"
           placeholder="Add new task..."
+          onChange={(e) =>
+            setPayload((prev) => ({ ...prev, title: e.target.value }))
+          }
         />
       </div>
       <div className="input-desc">
@@ -25,17 +64,24 @@ function Newtask({ isEdit, dataEdit }) {
           id="desc"
           cols="30"
           rows="10"
-          value={isEdit ? dataEdit.description : desc}
+          value={payload.desc}
+          onChange={(e) =>
+            setPayload((prev) => ({ ...prev, desc: e.target.value }))
+          }
         ></textarea>
       </div>
       <div className="choose">
         <div className="choose-date">
           <label htmlFor="date">Due Date</label>
           <input
+            min={new Date().toISOString().split("T")[0]}
             type="date"
             id="date"
-            value={isEdit ? dataEdit.date : date}
-            onChange={(e) => setDate(e.target.value)}
+            // defaultValue={defaultDate}
+            value={payload.date}
+            onChange={(e) =>
+              setPayload((prev) => ({ ...prev, date: e.target.value }))
+            }
           />
         </div>
 
@@ -44,8 +90,11 @@ function Newtask({ isEdit, dataEdit }) {
           <select
             name=""
             id="pio"
-            value={isEdit ? dataEdit.pio : pio}
-            defaultValue="normal"
+            value={payload.pio}
+            // defaultValue="normal"
+            onChange={(e) =>
+              setPayload((prev) => ({ ...prev, pio: e.target.value }))
+            }
           >
             <option value="low">Low</option>
             <option value="normal">Normal</option>
@@ -53,7 +102,13 @@ function Newtask({ isEdit, dataEdit }) {
           </select>
         </div>
       </div>
-      <button>{isEdit ? "Update" : "Add"}</button>
+      <button
+        onClick={() =>
+          !isEdit ? handleAddtask() : handleUpdateTask(dataEdit?.id)
+        }
+      >
+        {isEdit ? "Update" : "Add"}
+      </button>
     </div>
   );
 }

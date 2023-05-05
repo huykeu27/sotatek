@@ -6,6 +6,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  position: relative;
 }
 .todo > h3 {
   font-size: 24px;
@@ -27,4 +28,36 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+.bulk-action {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #e0e0e0;
+  border-top: 1px solid #0a0a0a;
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 20px;
+  align-items: center;
+}
+
+.bulk-action > span {
+  font-size: 16px;
+}
+
+.action > button {
+  min-width: 80px;
+  padding: 5px 15px;
+  color: white;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+.done {
+  background-color: #00bcd4;
+}
+.remove {
+  background-color: #d9534f;
 }
