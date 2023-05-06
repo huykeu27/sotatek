@@ -31,17 +31,17 @@ const Todo = () => {
 
   const handleRemoveTasks = () => {
     if (window.confirm("123")) {
-      // Lấy ra arr chứa những cái click trong local
+      // Lấy ra arr chứa những task được chọn
       const filterTodos = todos.filter((obj) => {
         return isCheckedIds.some((str) => obj.id === +str);
       });
 
-      // Filter arr không trung nhau giứa thang local và thằng vừa được lấy
+      // Filter arr không trung nhau giữa  local và arr được chọn
       const filteredArr = todos.filter(
         (obj1) => !filterTodos.some((obj2) => obj1.id === obj2.id)
       );
 
-      // Update cái không trùng kia
+      // Update arr mới vào local
       const updateTodos = [...filteredArr];
       localStorage.setItem("tasks", JSON.stringify(updateTodos));
       dispatch(setFlag(!flag));
