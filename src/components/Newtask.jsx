@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import "./newtask.css";
-import { v4 as uuidv4 } from "uuid";
+import { useDispatch, useSelector } from "react-redux";
+import { setFlag } from "../store/actions/appAction";
 
 function Newtask({ isEdit, dataEdit }) {
+  const { flag } = useSelector((state) => state.app);
+  const dispatch = useDispatch();
   const [payload, setPayload] = useState({
     title: isEdit ? dataEdit.title : "",
     desc: isEdit ? dataEdit.desc : "",
-    date: isEdit ? dataEdit.date : "",
+    date: isEdit ? dataEdit.date : new Date().toISOString().split("T")[0],
     pio: isEdit ? dataEdit.pio : "",
   });
 
@@ -22,16 +25,17 @@ function Newtask({ isEdit, dataEdit }) {
 
   const handleAddtask = () => {
     const todos = getTodosFromLocalStorage();
-    const id = uuidv4();
+    const id = Date.now();
     payload.id = id;
     const updateTodos = [...todos, payload];
     localStorage.setItem("tasks", JSON.stringify(updateTodos));
     setPayload({
       title: "",
       desc: "",
-      date: "",
+      date: new Date().toISOString().split("T")[0],
       pio: "",
     });
+    dispatch(setFlag(!flag));
   };
 
   const handleUpdateTask = (id) => {
@@ -40,9 +44,10 @@ function Newtask({ isEdit, dataEdit }) {
     payload.id = id;
     const updateTodos = [...filterTodos, payload];
     localStorage.setItem("tasks", JSON.stringify(updateTodos));
+    dispatch(setFlag(!flag));
     alert("Cập nhật công việc thành công");
   };
-  // var defaultDate = new Date().toISOString().split("T")[0];
+
   return (
     <div className="new-task">
       <h3>{isEdit ? "" : "New task"}</h3>

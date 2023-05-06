@@ -1,25 +1,52 @@
 import React, { useEffect, useState } from "react";
 import "./todo.css";
-import test from "../assets/test.json";
 import Task from "./Task";
+import { useDispatch, useSelector } from "react-redux";
+import { setFlag } from "../store/actions/appAction";
+
 const Todo = () => {
   const [isCheckedIds, setIsCheckedIds] = useState([]);
   const [search, setSearch] = useState(null);
   const [todos, setTodos] = useState([]);
   const [taskFilter, setTaskFilter] = useState();
+  const dispatch = useDispatch();
+  const { flag } = useSelector((state) => state.app);
 
   useEffect(() => {
-    getTodosFromLocalStorage();
-  }, []);
+    const getTodosFromLocalStorage = () => {
+      const storedTodos = localStorage.getItem("tasks");
+      if (storedTodos === null) {
+        const defaultTodos = []; // danh sách todos mặc định
+        localStorage.setItem("tasks", JSON.stringify(defaultTodos));
+        return defaultTodos;
+      }
+      const todoSort = JSON.parse(storedTodos).sort(
+        (a, b) => new Date(a.date) - new Date(b.date)
+      );
+      setTodos(todoSort);
+    };
 
-  const getTodosFromLocalStorage = () => {
-    const storedTodos = localStorage.getItem("tasks");
-    if (storedTodos === null) {
-      const defaultTodos = []; // danh sách todos mặc định
-      localStorage.setItem("tasks", JSON.stringify(defaultTodos));
-      return defaultTodos;
+    getTodosFromLocalStorage();
+  }, [flag]);
+
+  const handleRemoveTasks = () => {
+    if (window.confirm("123")) {
+      // Lấy ra arr chứa những cái click trong local
+      const filterTodos = todos.filter((obj) => {
+        return isCheckedIds.some((str) => obj.id === +str);
+      });
+
+      // Filter arr không trung nhau giứa thang local và thằng vừa được lấy
+      const filteredArr = todos.filter(
+        (obj1) => !filterTodos.some((obj2) => obj1.id === obj2.id)
+      );
+
+      // Update cái không trùng kia
+      const updateTodos = [...filteredArr];
+      localStorage.setItem("tasks", JSON.stringify(updateTodos));
+      dispatch(setFlag(!flag));
+      setIsCheckedIds([]);
     }
-    setTodos(JSON.parse(storedTodos));
   };
 
   const handleCheckBoxClick = (e) => {
@@ -63,7 +90,9 @@ const Todo = () => {
           <span>Bulk action:</span>
           <div className="action">
             <button className="done">Done</button>
-            <button className="remove">Remove</button>
+            <button className="remove" onClick={handleRemoveTasks}>
+              Remove
+            </button>
           </div>
         </div>
       )}
